@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NeuraCare - AI-Powered Mental Wellness Companion">
+    <title>NeuraCare - Mental Wellness Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1f4d;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.15) 0%, transparent 40%),
+                radial-gradient(1px 1px at 10% 20%, white, transparent),
+                radial-gradient(1px 1px at 30% 60%, white, transparent),
+                radial-gradient(1px 1px at 50% 15%, white, transparent),
+                radial-gradient(1px 1px at 70% 50%, white, transparent),
+                radial-gradient(1px 1px at 85% 80%, white, transparent);
+            background-size: 100% 100%, 100% 100%, 300px 300px, 400px 400px, 350px 350px, 450px 450px, 380px 380px;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: twinkle 4s infinite;
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            height: 92vh;
+            max-height: 950px;
+            min-height: 650px;
+            background: rgba(30, 37, 80, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        /* HEADER - Dynamic Collapsing */
+        .app-header {
+            text-align: center;
+            padding: 25px 30px 15px;
+            flex-shrink: 0;
+            transition: all 0.4s ease;
+        }
+
+        .app-header.collapsed {
+            padding: 15px 30px 10px;
+        }
+
+        .app-logo {
+            font-size: 32px;
+            color: white;
+            /* font-family: 'Brush Script MT', cursive; */
+            font-weight: 450;
+            margin-bottom: 12px;
+            font-family: 'Poppins', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+        }
+
+        .app-header.collapsed .app-logo {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .location {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            transition: all 0.4s ease;
+            opacity: 1;
+            max-height: 20px;
+            overflow: hidden;
+        }
+
+        .app-header.collapsed .location {
+            opacity: 0;
+            max-height: 0;
+            margin-bottom: 0;
+        }
+
+        .greeting {
+            font-size: 26px;
+            color: white;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            transition: all 0.4s ease;
+            opacity: 1;
+            max-height: 100px;
+            overflow: hidden;
+        }
+
+        .app-header.collapsed .greeting {
+            opacity: 0;
+            max-height: 0;
+            margin-bottom: 0;
+        }
+
+        /* MOOD SELECTION - Collapsible */
+        .mood-selection {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 0 30px;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            transition: all 0.4s ease;
+            opacity: 1;
+            max-height: 50px;
+            overflow: hidden;
+        }
+
+        .mood-selection.collapsed {
+            opacity: 0;
+            max-height: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .mood-btn {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            outline: none;
+        }
+
+        .mood-btn:hover { 
+            background: rgba(255, 255, 255, 0.25); 
+            transform: scale(1.05); 
+        }
+
+        .mood-btn.selected { 
+            background: white; 
+            color: #2d3a7f; 
+            font-weight: 500; 
+        }
+
+        /* METRICS - Always visible but compact */
+        #analytics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 0 30px 12px;
+            flex-shrink: 0;
+            transition: all 0.4s ease;
+        }
+
+        #analytics.collapsed {
+            gap: 8px;
+            padding: 0 30px 8px;
+        }
+
+        .metric {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 10px 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #analytics.collapsed .metric {
+            padding: 8px 6px;
+        }
+
+        .metric:hover { 
+            background: rgba(255, 255, 255, 0.15); 
+            transform: translateY(-2px); 
+        }
+
+        .metric.pulse { 
+            animation: pulse 0.6s ease; 
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .metric-label {
+            font-size: 9px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            transition: all 0.3s ease;
+        }
+
+        #analytics.collapsed .metric-label {
+            font-size: 8px;
+            margin-bottom: 3px;
+        }
+
+        .metric-value { 
+            font-size: 15px; 
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        #analytics.collapsed .metric-value {
+            font-size: 13px;
+        }
+
+        .positive { color: #10b981; }
+        .neutral { color: #f59e0b; }
+        .negative { color: #ef4444; }
+        .low { color: #10b981; }
+        .medium { color: #f59e0b; }
+        .high { color: #ef4444; }
+
+        /* CHAT - Maximum space when collapsed */
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 15px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+        }
+
+        #chat::-webkit-scrollbar { width: 5px; }
+        #chat::-webkit-scrollbar-track { background: transparent; }
+        #chat::-webkit-scrollbar-thumb { 
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 10px; 
+        }
+        #chat::-webkit-scrollbar-thumb:hover { 
+            background: rgba(255, 255, 255, 0.3); 
+        }
+
+        .msg {
+            padding: 11px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user { 
+            background: rgba(255, 255, 255, 0.2); 
+            color: white; 
+            align-self: flex-end; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+        }
+
+        .bot { 
+            background: rgba(255, 255, 255, 0.12); 
+            color: white; 
+            align-self: flex-start; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+        }
+
+        .loading { 
+            background: rgba(102, 126, 234, 0.2); 
+            color: rgba(255, 255, 255, 0.9); 
+            align-self: center; 
+            font-style: italic; 
+            animation: loadPulse 1.5s ease-in-out infinite; 
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @keyframes loadPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* INPUT */
+        .input-section { 
+            padding: 12px 30px 15px; 
+            flex-shrink: 0;
+        }
+
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within { 
+            background: rgba(255, 255, 255, 0.18); 
+            border-color: rgba(255, 255, 255, 0.4); 
+        }
+
+        #msg {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        #msg::placeholder { color: rgba(255, 255, 255, 0.5); }
+        #msg:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .send-icon { 
+            font-size: 18px; 
+            cursor: pointer; 
+            transition: transform 0.3s ease; 
+            color: white;
+            user-select: none;
+        }
+
+        .send-icon:hover { transform: scale(1.2); }
+        .send-icon.disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* FOOTER */
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px 15px;
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            padding: 7px 14px;
+            border-radius: 16px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            outline: none;
+        }
+
+        .footer-btn:hover { 
+            background: rgba(255, 255, 255, 0.25); 
+            transform: translateY(-2px); 
+        }
+
+        .footer-btn:active { transform: translateY(0); }
+
+        .privacy-badge { 
+            color: #10b981; 
+            font-size: 11px; 
+            font-weight: 500; 
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: rgba(30, 37, 80, 0.95);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 28px;
+            padding: 40px;
+            max-width: 550px;
+            width: 100%;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-close {
+            float: right;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .modal-close:hover { 
+            background: rgba(255, 255, 255, 0.3); 
+            transform: rotate(90deg); 
+        }
+
+        .modal-title {
+            font-size: 26px;
+            margin: 20px 0 12px;
+            font-weight: 600;
+        }
+
+        .modal-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 22px;
+            font-size: 14px;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 16px;
+            margin: 10px 0;
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .app-header { padding: 20px 20px 12px; }
+            .app-header.collapsed { padding: 12px 20px 8px; }
+            
+            .app-logo { font-size: 28px; }
+            .app-header.collapsed .app-logo { font-size: 20px; }
+            
+            .greeting { font-size: 22px; }
+            .location { font-size: 12px; }
+
+            .mood-selection, #analytics, #chat, .input-section, .footer-actions {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            #analytics { gap: 8px; }
+            .metric { padding: 9px 6px; }
+            #analytics.collapsed .metric { padding: 7px 5px; }
+        }
+
+        @media (max-width: 480px) {
+            .app-logo { font-size: 24px; }
+            .app-header.collapsed .app-logo { font-size: 18px; }
+            .greeting { font-size: 19px; }
+            .mood-btn { font-size: 12px; padding: 7px 12px; }
+            .msg { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-header" id="app-header">
+            <div class="app-logo">NeuraCare</div>
+            <div class="location">The only time you fail is when you fall down and stay down.</div>
+            <div class="greeting">Hi there, how are you<br>feeling today?</div>
+        </div>
+
+        <div class="mood-selection" id="mood-selection">
+            <button class="mood-btn" onclick="selectMood('elated')">Elated</button>
+            <button class="mood-btn" onclick="selectMood('neutral')">Neutral</button>
+            <button class="mood-btn" onclick="selectMood('thoughtful')">Thoughtful</button>
+            <button class="mood-btn" onclick="selectMood('anxious')">Anxious</button>
+        </div>
+
+        <div id="analytics">
+            <div class="metric" id="sentiment-metric">
+                <div class="metric-label">Sentiment</div>
+                <div class="metric-value neutral" id="sentiment-display">Neutral</div>
+            </div>
+            <div class="metric" id="burnout-metric">
+                <div class="metric-label">Burnout</div>
+                <div class="metric-value low" id="burnout-display">Low</div>
+            </div>
+            <div class="metric" id="emotion-metric">
+                <div class="metric-label">Emotion</div>
+                <div class="metric-value" id="emotion-display">Calm</div>
+            </div>
+        </div>
+
+        <div id="chat"></div>
+
+        <div class="input-section">
+            <div class="input-wrapper">
+                <span>💬</span>
+                <input type="text" id="msg" placeholder="Talk to me" autocomplete="off" aria-label="Message input"/>
+                <span class="send-icon" id="send-btn" onclick="sendMessage()">➤</span>
+            </div>
+        </div>
+
+        <div class="footer-actions">
+            <span class="privacy-badge">🔒 Privacy Protected</span>
+            <div>
+                <button class="footer-btn" onclick="clearChat()">Clear</button>
+                <button class="footer-btn" onclick="exportData()">Export</button>
+                <button class="footer-btn" onclick="openAbout()">About</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal" role="dialog">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('about-modal')">×</button>
+            <div class="modal-title">About NeuraCare</div>
+            <div class="modal-subtitle">AI-Powered Burnout Detection Platform</div>
+            
+            <div class="contact-item">
+                <strong>✨ Features:</strong><br>
+                • Advanced Sentiment Analysis<br>
+                • Burnout Level Detection<br>
+                • Privacy-Compliant Storage<br>
+                • Real-time Emotion Recognition
+            </div>
+
+            <div class="contact-item">
+                <strong>📧 Contact:</strong><br>
+                Email: harshit.kamikaze@gmail.com, kartikbhatoy@gmail.com<br>
+                Website: www.neuracare.ai<br>
+                Team: RTX6090 Developers
+            </div>
+
+            <div class="contact-item" style="background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444;">
+                <strong>⚠️ Crisis Support:</strong><br>
+                📞 9152987821 - Suicide & Crisis Lifeline<br>
+                📱 02227546669 - Crisis Text Line (Text HOME)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            API_URL: 'http://127.0.0.1:8000/chat',
+            SESSION_ID: 'session_' + Date.now(),
+            STORAGE_KEY: 'neuracare_messages',
+            METRICS_KEY: 'neuracare_metrics'
+        };
+
+        const DOM = {
+            chat: document.getElementById('chat'),
+            input: document.getElementById('msg'),
+            sendBtn: document.getElementById('send-btn'),
+            header: document.getElementById('app-header'),
+            moodSelection: document.getElementById('mood-selection'),
+            analytics: document.getElementById('analytics'),
+            sentiment: {
+                display: document.getElementById('sentiment-display'),
+                metric: document.getElementById('sentiment-metric')
+            },
+            burnout: {
+                display: document.getElementById('burnout-display'),
+                metric: document.getElementById('burnout-metric')
+            },
+            emotion: {
+                display: document.getElementById('emotion-display'),
+                metric: document.getElementById('emotion-metric')
+            }
+        };
+
+        let isProcessing = false;
+        let hasStartedChat = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 NeuraCare initialized');
+            loadMessages();
+            loadMetrics();
+            DOM.input.focus();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            DOM.input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal.id);
+                });
+            });
+        }
+
+        // ==================== COLLAPSING LOGIC ====================
+        function collapseUI() {
+            if (!hasStartedChat) {
+                hasStartedChat = true;
+                DOM.header.classList.add('collapsed');
+                DOM.moodSelection.classList.add('collapsed');
+                DOM.analytics.classList.add('collapsed');
+                console.log('✅ UI collapsed for chat mode');
+            }
+        }
+
+        // ==================== STORAGE ====================
+        function loadMessages() {
+            try {
+                const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+                if (saved) {
+                    const messages = JSON.parse(saved);
+                    messages.forEach(m => addMessage(m.text, m.type, false));
+                    if (messages.length > 0) collapseUI();
+                } else {
+                    addMessage('Hello! I\'m NeuraCare 🌟 How are you feeling today?', 'bot', false);
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+            }
+        }
+
+        function saveMessage(text, type) {
+            try {
+                const saved = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
+                saved.push({ text, type, time: Date.now() });
+                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(saved));
+            } catch (error) {
+                console.error('Error saving message:', error);
+            }
+        }
+
+        function loadMetrics() {
+            try {
+                const saved = localStorage.getItem(CONFIG.METRICS_KEY);
+                if (saved) {
+                    updateMetricsDisplay(JSON.parse(saved), false);
+                }
+            } catch (error) {
+                console.error('Error loading metrics:', error);
+            }
+        }
+
+        function saveMetrics(data) {
+            try {
+                const metrics = {
+                    sentiment_label: data.sentiment?.label || 'neutral',
+                    burnout_level: data.burnout?.level || 'low',
+                    emotion: data.sentiment?.emotion || 'calm',
+                    timestamp: Date.now()
+                };
+                localStorage.setItem(CONFIG.METRICS_KEY, JSON.stringify(metrics));
+            } catch (error) {
+                console.error('Error saving metrics:', error);
+            }
+        }
+
+        // ==================== MESSAGES ====================
+        function addMessage(text, type, save = true) {
+            const div = document.createElement('div');
+            div.className = 'msg ' + type;
+            div.textContent = text;
+            DOM.chat.appendChild(div);
+            scrollToBottom();
+            if (save) saveMessage(text, type);
+        }
+
+        function showLoading() {
+            const div = document.createElement('div');
+            div.className = 'msg loading';
+            div.id = 'loading-indicator';
+            div.textContent = '✨ Analyzing...';
+            DOM.chat.appendChild(div);
+            scrollToBottom();
+        }
+
+        function removeLoading() {
+            document.getElementById('loading-indicator')?.remove();
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                DOM.chat.scrollTop = DOM.chat.scrollHeight;
+            }, 50);
+        }
+
+        // ==================== METRICS ====================
+        function updateMetricsDisplay(data, animate = true) {
+            try {
+                if (data.sentiment_label || data.sentiment?.label) {
+                    const label = data.sentiment_label || data.sentiment.label;
+                    DOM.sentiment.display.textContent = capitalizeFirst(label);
+                    DOM.sentiment.display.className = 'metric-value ' + label;
+                    if (animate) {
+                        DOM.sentiment.metric.classList.add('pulse');
+                        setTimeout(() => DOM.sentiment.metric.classList.remove('pulse'), 600);
+                    }
+                }
+
+                if (data.emotion || data.sentiment?.emotion) {
+                    const emotionValue = data.emotion || data.sentiment.emotion;
+                    DOM.emotion.display.textContent = capitalizeFirst(emotionValue);
+                    if (animate) {
+                        DOM.emotion.metric.classList.add('pulse');
+                        setTimeout(() => DOM.emotion.metric.classList.remove('pulse'), 600);
+                    }
+                }
+
+                if (data.burnout_level || data.burnout?.level) {
+                    const level = data.burnout_level || data.burnout.level;
+                    DOM.burnout.display.textContent = capitalizeFirst(level);
+                    DOM.burnout.display.className = 'metric-value ' + level;
+                    if (animate) {
+                        DOM.burnout.metric.classList.add('pulse');
+                        setTimeout(() => DOM.burnout.metric.classList.remove('pulse'), 600);
+                    }
+                }
+
+                saveMetrics(data);
+            } catch (error) {
+                console.error('Error updating metrics:', error);
+            }
+        }
+
+        // ==================== API ====================
+        async function sendMessage() {
+            const text = DOM.input.value.trim();
+            if (!text || isProcessing) return;
+
+            // Collapse UI on first message
+            collapseUI();
+
+            isProcessing = true;
+            setInputState(true);
+
+            addMessage(text, 'user');
+            DOM.input.value = '';
+            showLoading();
+
+            try {
+                const response = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: CONFIG.SESSION_ID,
+                        message: text,
+                        consent: true
+                    })
+                });
+
+                removeLoading();
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                addMessage(data.response || 'I\'m here to listen.', 'bot');
+                updateMetricsDisplay(data, true);
+
+            } catch (error) {
+                console.error('❌ Error:', error);
+                removeLoading();
+                addMessage('⚠️ Connection error. Please check server.', 'bot');
+            } finally {
+                isProcessing = false;
+                setInputState(false);
+                DOM.input.focus();
+            }
+        }
+
+        function setInputState(disabled) {
+            DOM.input.disabled = disabled;
+            DOM.sendBtn.classList.toggle('disabled', disabled);
+        }
+
+        // ==================== UI ====================
+        function selectMood(mood) {
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+            event.target.classList.add('selected');
+            addMessage(`Mood selected: ${capitalizeFirst(mood)}`, 'bot', false);
+            collapseUI();
+        }
+
+        function clearChat() {
+            if (confirm('⚠️ Clear all messages and reset?')) {
+                try {
+                    localStorage.removeItem(CONFIG.STORAGE_KEY);
+                    localStorage.removeItem(CONFIG.METRICS_KEY);
+                    DOM.chat.innerHTML = '';
+                    addMessage('Chat cleared! How can I help?', 'bot', false);
+                    
+                    // Reset UI
+                    hasStartedChat = false;
+                    DOM.header.classList.remove('collapsed');
+                    DOM.moodSelection.classList.remove('collapsed');
+                    DOM.analytics.classList.remove('collapsed');
+                    
+                    updateMetricsDisplay({
+                        sentiment_label: 'neutral',
+                        burnout_level: 'low',
+                        emotion: 'calm'
+                    }, false);
+                } catch (error) {
+                    console.error('Error clearing:', error);
+                }
+            }
+        }
+
+        function exportData() {
+            try {
+                const messages = localStorage.getItem(CONFIG.STORAGE_KEY);
+                if (!messages) {
+                    alert('📭 No data to export');
+                    return;
+                }
+
+                const exportData = {
+                    app: 'NeuraCare',
+                    exported_at: new Date().toISOString(),
+                    messages: JSON.parse(messages),
+                    metrics: JSON.parse(localStorage.getItem(CONFIG.METRICS_KEY) || 'null')
+                };
+
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `neuracare_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                addMessage('✅ Data exported!', 'bot', false);
+            } catch (error) {
+                console.error('Error exporting:', error);
+            }
+        }
+
+        function openAbout() {
+            document.getElementById('about-modal').classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function capitalizeFirst(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+
+        console.log('✅ NeuraCare ready!');
+    </script>
+</body>
+</html>
