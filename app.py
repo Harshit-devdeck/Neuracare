@@ -1,7 +1,8 @@
+#removed api key from code to prevent missuse of it
 import openai from OpenAI
 import requests
 Client = OpenAI{
-api_key="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",
+api_key="",
 base_url="https://api.perplexity.ai"}
 response=client.chat.completions.create{
 model="sonar-pro",
