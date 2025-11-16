@@ -6,7 +6,7 @@ import sqlite3
 import time
 import hashlib
 import re
-
+# removed the api key from the code, from preventing missuse
 # Try to import AI libraries, use fallback if they fail
 try:
     from openai import OpenAI
@@ -56,7 +56,7 @@ conn.commit()
 if PERPLEXITY_AVAILABLE:
     try:
         perplexity_client = OpenAI(
-            api_key="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",
+            api_key="",
             base_url="https://api.perplexity.ai"
         )
     except:
